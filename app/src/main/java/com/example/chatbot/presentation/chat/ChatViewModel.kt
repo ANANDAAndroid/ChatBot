@@ -6,6 +6,7 @@ import com.example.chatbot.data.local.ChatLocalDataSource
 import com.example.chatbot.data.mapper.toDomainChatNode
 import com.example.chatbot.domain.model.*
 import com.example.chatbot.domain.repository.ChatRepository
+import com.example.chatbot.test.NavigationAgent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.delay
@@ -19,7 +20,8 @@ import java.util.*
 
 @HiltViewModel
 class ChatViewModel @Inject constructor(
-    private val repository: ChatRepository
+    private val repository: ChatRepository,
+    private val navigationAgent: NavigationAgent
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ChatUiState())
@@ -76,18 +78,7 @@ class ChatViewModel @Inject constructor(
     }
 
     fun onQuickReplyClicked(option: ChatOption) {
-        val userMessage = Message(
-            text = option.text,
-            sender = Sender.USER,
-            timestamp = getCurrentTime()
-        )
-
-        _uiState.update {
-            it.copy(
-                messages = it.messages + userMessage,
-                quickReplies = emptyList()
-            )
-        }
+        addUserMessage(option.text)
 
         viewModelScope.launch {
             delay(400) // Slight delay before bot starts "typing"
@@ -102,6 +93,46 @@ class ChatViewModel @Inject constructor(
                     loadNode(option.nextNodeId, withDelay = true)
                 }
             }
+        }
+    }
+
+    fun onInputTextChanged(text: String) {
+        _uiState.update { it.copy(inputText = text) }
+    }
+
+    fun onSendMessage() {
+        val text = _uiState.value.inputText.trim()
+        if (text.isEmpty()) return
+
+        addUserMessage(text)
+        _uiState.update { it.copy(inputText = "") }
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(isBotTyping = true) }
+            val response = navigationAgent.sendMessage(text)
+            _uiState.update { it.copy(isBotTyping = false) }
+
+            addBotMessage(
+                text = response.text,
+                replies = response.options.map { 
+                    ChatOption(text = it.text, nextNodeId = it.nextNodeId)
+                }
+            )
+        }
+    }
+
+    private fun addUserMessage(text: String) {
+        val userMessage = Message(
+            text = text,
+            sender = Sender.USER,
+            timestamp = getCurrentTime()
+        )
+
+        _uiState.update {
+            it.copy(
+                messages = it.messages + userMessage,
+                quickReplies = emptyList()
+            )
         }
     }
 

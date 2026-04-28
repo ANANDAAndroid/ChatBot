@@ -19,6 +19,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -67,6 +73,8 @@ fun ChatScreen(
                 viewModel.onQuickReplyClicked(option)
             }
         },
+        onInputTextChanged = { viewModel.onInputTextChanged(it) },
+        onSendMessage = { viewModel.onSendMessage() },
         onBackClick = onBackClick
     )
 }
@@ -76,6 +84,8 @@ fun ChatScreenContent(
     serviceTitle: String,
     uiState: ChatUiState,
     onQuickReplyClick: (ChatOption) -> Unit,
+    onInputTextChanged: (String) -> Unit,
+    onSendMessage: () -> Unit,
     onBackClick: () -> Unit
 ) {
     val listState = rememberLazyListState()
@@ -116,7 +126,11 @@ fun ChatScreenContent(
                         }
                     }
                 }
-                ChatInputBar()
+                ChatInputBar(
+                    text = uiState.inputText,
+                    onTextChanged = onInputTextChanged,
+                    onSendClick = onSendMessage
+                )
                 Spacer(modifier = Modifier.height(8.dp))
             }
         },
@@ -309,8 +323,11 @@ fun ChatTopBar(
 
 @Composable
 fun ChatInputBar(
+    text: String,
+    onTextChanged: (String) -> Unit,
+    onSendClick: () -> Unit,
     modifier: Modifier = Modifier,
-    hint: String = stringResource(R.string.select_option_hint)
+    hint: String = stringResource(R.string.type_message_hint)
 ) {
     Row(
         modifier = modifier
@@ -318,19 +335,51 @@ fun ChatInputBar(
             .padding(horizontal = 8.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
+        TextField(
+            value = text,
+            onValueChange = onTextChanged,
             modifier = Modifier
                 .weight(1f)
-                .clip(RoundedCornerShape(24.dp))
-                .background(InputFieldGray)
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .clip(RoundedCornerShape(24.dp)),
+            placeholder = {
+                Text(
+                    text = hint,
+                    color = Color.Gray,
+                    fontSize = 16.sp
+                )
+            },
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = InputFieldGray,
+                unfocusedContainerColor = InputFieldGray,
+                disabledContainerColor = InputFieldGray,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+            ),
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Send
+            ),
+            keyboardActions = KeyboardActions(
+                onSend = { onSendClick() }
+            ),
+            maxLines = 4
+        )
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        IconButton(
+            onClick = onSendClick,
+            enabled = text.trim().isNotEmpty(),
+            modifier = Modifier
+                .size(48.dp)
+                .background(
+                    if (text.trim().isNotEmpty()) DeepGreen else Color.Gray,
+                    CircleShape
+                )
         ) {
-            Text(
-                text = hint,
-                color = Color.Gray,
-                fontSize = 16.sp,
-                modifier = Modifier.weight(1f)
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.Send,
+                contentDescription = stringResource(R.string.send),
+                tint = Color.White
             )
         }
     }
@@ -351,7 +400,9 @@ fun ChatScreenPreview() {
                     ChatOption("Loan Info", "loan_info")
                 )
             ),
-            onQuickReplyClick = {}
+            onQuickReplyClick = {},
+            onInputTextChanged = {},
+            onSendMessage = {}
         ) {
         }
     }

@@ -1,10 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.services)
-    alias(libs.plugins.ksp)
 }
 
 android {
@@ -41,6 +41,14 @@ android {
     buildFeatures {
         compose = true
     }
+}
+
+hilt {
+    enableAggregatingTask = true
+}
+
+ksp {
+    arg("hilt.enableKsp", "true")
 }
 
 dependencies {

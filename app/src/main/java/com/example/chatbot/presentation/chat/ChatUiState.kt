@@ -7,5 +7,6 @@ data class ChatUiState(
     val messages: List<Message> = emptyList(),
     val quickReplies: List<ChatOption> = emptyList(),
     val isBotTyping: Boolean = false,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val inputText: String = ""
 )
