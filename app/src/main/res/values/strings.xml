@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">ChatBot</string>
+    <string name="banking_assistant">Banking Assistant</string>
+    <string name="service_hub">Service Hub</string>
+    <string name="how_can_i_help">How can I help you today?</string>
+    <string name="mint_flow_assistant_ready">Your Mint Flow assistant is ready for any task.</string>
+    <string name="banking_assistance">Banking Assistance</string>
+    <string name="banking_description">Manage transactions, check balances, and secure your finances.</string>
+    <string name="start_conversation">Start conversation</string>
+    <string name="delivery_assistance">Delivery Assistance</string>
+    <string name="delivery_description">Track shipments and coordinate logistics seamlessly.</string>
+    <string name="track_orders">Track orders</string>
+    <string name="shopping_assistant">Shopping Assistant</string>
+    <string name="shopping_description">Find the best deals and curated product recommendations.</string>
+    <string name="personal_shopper">Personal shopper</string>
+    <string name="travel_booking">Travel &amp; Booking</string>
+    <string name="travel_description">Plan your next journey with ease and premium support.</string>
+    <string name="book_trip">Book trip</string>
+    <string name="quiet_advisor">THE QUIET ADVISOR</string>
+    <string name="powered_by">POWERED BY</string>
+    <string name="mint_flow">Mint Flow</string>
+    <string name="online">Online</string>
+    <string name="select_option_hint">Select an option above</string>
+    <string name="type_message_hint">Type a message...</string>
+    <string name="send">Send</string>
+    <string name="back">Back</string>
+</resources>
