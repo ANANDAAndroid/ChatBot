@@ -9,7 +9,8 @@ object ChatTools {
         description = "Retrieves specific chat message and options using a Node ID.",
         parameters = listOf(
             Schema.str("nodeId", "The ID of the node to fetch, e.g., 'banking_root'")
-        )
+        ),
+        requiredParameters = listOf("nodeId")
     )
 
     val findServiceTool = defineFunction(
@@ -17,7 +18,8 @@ object ChatTools {
         description = "Finds the root node ID for a specific service (banking, shopping, delivery, travel).",
         parameters = listOf(
             Schema.str("serviceName", "The service name requested by the user")
-        )
+        ),
+        requiredParameters = listOf("serviceName")
     )
 
     val getServicesTool = defineFunction(

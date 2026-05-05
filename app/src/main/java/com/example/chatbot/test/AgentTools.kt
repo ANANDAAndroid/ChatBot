@@ -10,7 +10,8 @@ object AgentTools {
         description = "Returns the current temperature for a city.",
         parameters = listOf(
             Schema.str("location", "The city name, e.g., London")
-        )
+        ),
+        requiredParameters = listOf("location")
     )
 
     // Tool 2: A simple calculator function
@@ -21,6 +22,7 @@ object AgentTools {
             Schema.double("a", "First number"),
             Schema.double("b", "Second number"),
             Schema.str("op", "Operation: add, sub, mul, div")
-        )
+        ),
+        requiredParameters = listOf("a", "b", "op")
     )
 }

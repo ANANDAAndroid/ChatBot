@@ -14,7 +14,7 @@ import org.json.JSONObject
 @HiltViewModel
 class AgentViewModel @Inject constructor() : ViewModel() {
     private val generativeModel = GenerativeModel(
-        modelName = "models/gemini-2.5-flash", // Use Flash for speed in agentic loops
+        modelName = "gemini-1.5-flash", // Use Flash for speed in agentic loops
         apiKey = "AIzaSyAdmSkPWMJgqnJFlbZZ89W6DW3quDfPPO0",
         tools = listOf(Tool(listOf(AgentTools.weatherTool, AgentTools.calcTool)))
     )
@@ -57,8 +57,8 @@ class AgentViewModel @Inject constructor() : ViewModel() {
                 JSONObject().put("temp", "${(20..30).random()}°C in $city")
             }
             "calculate" -> {
-                val a = call.args["a"]?.toDoubleOrNull() ?: 0.0
-                val b = call.args["b"]?.toDoubleOrNull() ?: 0.0
+                val a = (call.args["a"] as? String)?.toDoubleOrNull() ?: 0.0
+                val b = (call.args["b"] as? String)?.toDoubleOrNull() ?: 0.0
                 val op = call.args["op"] ?: ""
                 val res = when(op) {
                     "add" -> a + b

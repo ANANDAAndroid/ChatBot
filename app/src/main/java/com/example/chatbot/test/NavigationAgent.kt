@@ -8,6 +8,7 @@ import com.google.ai.client.generativeai.type.FunctionCallPart
 import com.google.ai.client.generativeai.type.FunctionResponsePart
 import com.google.ai.client.generativeai.type.Tool
 import com.google.ai.client.generativeai.type.content
+import org.json.JSONArray
 import org.json.JSONObject
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -22,8 +23,8 @@ class NavigationAgent @Inject constructor() {
     )
 
     private val generativeModel = GenerativeModel(
-        modelName = "models/gemini-2.5-flash-lite",
-        apiKey = "AIzaSyAdmSkPWMJgqnJFlbZZ89W6DW3quDfPPO0",
+        modelName = "models/gemini-2.0-flash",
+        apiKey = "AIzaSyAoPVLt7qjMlfj-BBh07lN5Uoy7HjY1iZ4",
         systemInstruction = content {
             text("""
             You are a smart navigation agent. 
@@ -71,18 +72,18 @@ class NavigationAgent @Inject constructor() {
     private fun handleAgentAction(call: FunctionCallPart): JSONObject {
         return when (call.name) {
             "getChatNode" -> {
-                val id = call.args["nodeId"] as String
+                val id = call.args["nodeId"] ?: ""
                 val node = ChatLocalDataSource.chatNodes.find { it.id == id }
                 lastOptions = node?.options ?: emptyList()
 
                 JSONObject().apply {
                     put("message", node?.message ?: "Node not found")
-                    put("options", node?.options?.map { "${it.text} (ID: ${it.nextNodeId})" } ?: emptyList<String>())
+                    put("options", JSONArray(node?.options?.map { "${it.text} (ID: ${it.nextNodeId})" } ?: emptyList<String>()))
                 }
             }
 
             "findService" -> {
-                val service = call.args["serviceName"] as String
+                val service = call.args["serviceName"] ?: ""
                 val rootNode = ChatLocalDataSource.chatNodes.find {
                     it.service == service.lowercase() && it.id.endsWith("_root")
                 }
@@ -91,14 +92,14 @@ class NavigationAgent @Inject constructor() {
                 JSONObject().apply {
                     put("rootId", rootNode?.id ?: "none")
                     put("welcomeMessage", rootNode?.message ?: "How can I help?")
-                    put("options", rootNode?.options?.map { "${it.text} (ID: ${it.nextNodeId})" } ?: emptyList<String>())
+                    put("options", JSONArray(rootNode?.options?.map { "${it.text} (ID: ${it.nextNodeId})" } ?: emptyList<String>()))
                 }
             }
 
             "getServices" -> {
                 val services = ChatLocalDataSource.chatNodes.filter { it.id.endsWith("_root") }
                 JSONObject().apply {
-                    put("availableServices", services.map { "${it.service} (Root ID: ${it.id})" })
+                    put("availableServices", JSONArray(services.map { "${it.service} (Root ID: ${it.id})" }))
                 }
             }
 
