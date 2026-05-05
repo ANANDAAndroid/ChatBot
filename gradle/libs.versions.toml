@@ -15,6 +15,7 @@ serialization = "1.11.0"
 firebaseBom = "33.9.0"
 googleServices = "4.4.2"
 generativeai = "0.9.0"
+aicore = "0.0.1-exp02"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -41,6 +42,7 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
 generativeai = { group = "com.google.ai.client.generativeai", name = "generativeai", version.ref = "generativeai" }
+aicore = { group = "com.google.ai.edge.aicore", name = "aicore", version.ref = "aicore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

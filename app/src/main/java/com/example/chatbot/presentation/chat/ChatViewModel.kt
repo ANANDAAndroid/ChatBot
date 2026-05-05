@@ -31,8 +31,9 @@ class ChatViewModel @Inject constructor(
 
     fun initChat(serviceTitle: String) {
         currentServiceTitle = serviceTitle
+        val rootId = getRootId(serviceTitle)
+        navigationAgent.setCurrentNode(rootId)
         if (_uiState.value.messages.isEmpty()) {
-            val rootId = getRootId(serviceTitle)
             viewModelScope.launch {
                 _uiState.update { it.copy(isLoading = true) }
                 // Seed data if collection is empty (handled inside repository)
@@ -50,6 +51,7 @@ class ChatViewModel @Inject constructor(
     }
 
     private fun loadNode(nodeId: String, withDelay: Boolean = true) {
+        navigationAgent.setCurrentNode(nodeId)
         viewModelScope.launch {
             _uiState.update { it.copy(isBotTyping = true) }
             if (withDelay) {

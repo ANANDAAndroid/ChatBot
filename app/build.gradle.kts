@@ -17,7 +17,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.chatbot"
-        minSdk = 24
+        minSdk = 31
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -68,6 +68,7 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.generativeai)
+    implementation(libs.aicore)
 
     // Firebase
     implementation(platform(libs.firebase.bom))
